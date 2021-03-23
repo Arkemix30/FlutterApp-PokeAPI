@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokeapi/widgets/PokemonListCards.dart';
 
 class ChoosePokemon extends StatefulWidget {
   ChoosePokemon({Key key}) : super(key: key);
@@ -8,11 +9,18 @@ class ChoosePokemon extends StatefulWidget {
 }
 
 class _ChoosePokemonState extends State<ChoosePokemon> {
+  Map allPokemonsList = {};
+  var pokemons = [];
+
   Color pokecolor = const Color.fromARGB(255, 255, 203, 0);
   Color pokebg = const Color.fromARGB(255, 0, 99, 177);
 
   @override
   Widget build(BuildContext context) {
+    allPokemonsList = ModalRoute.of(context).settings.arguments;
+    for (var i = 0; i < allPokemonsList['pokemons'].length; i++) {
+      pokemons.add(allPokemonsList['pokemons'][i]['name']);
+    }
     return Scaffold(
       backgroundColor: pokebg,
       appBar: AppBar(
@@ -21,16 +29,10 @@ class _ChoosePokemonState extends State<ChoosePokemon> {
         centerTitle: true,
         elevation: 0,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-              child: SafeArea(
-                  child: Text(
-            'Choose Pokemon',
-            style: TextStyle(color: Colors.white),
-          ))),
-        ],
+      body: SafeArea(
+        child: ListView(
+          children: pokemons.map((p) => PokemonListCards(pokemon: p)).toList(),
+        ),
       ),
     );
   }

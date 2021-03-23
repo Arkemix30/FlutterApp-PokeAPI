@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Loading extends StatefulWidget {
   Loading({Key key}) : super(key: key);
@@ -10,61 +11,32 @@ class Loading extends StatefulWidget {
 }
 
 class _LoadingState extends State<Loading> {
-  var pokemons = [];
-  void getData() async {
-    Response response =
-        await get(Uri.https('pokeapi.co', '/api/v2/pokemon/pikachu'));
-    Map data = jsonDecode(response.body);
-    var abilities = [];
-    for (var i = 0; i < data['abilities'].length; i++) {
-      abilities.add(data['abilities'][i]['ability']['name']);
-    }
-    print(abilities);
-    print(data['abilities'].length);
-    //print(data['abilities'][0]['ability']['name']);
-  }
-
+  var allPokemons = [];
+  Color pokebg = const Color.fromARGB(255, 0, 99, 177);
   void getPokemons() async {
     Response response = await get(
         Uri.https('pokeapi.co', '/api/v2/pokemon', {'limit': '1118'}));
+
     Map data = jsonDecode(response.body);
 
-    for (var i = 0; i < data['results'].length; i++) {
-      pokemons.add(data['results'][i]['name']);
-    }
+    Navigator.pushNamed(context, '/pokemon',
+        arguments: {'pokemons': data['results']});
   }
 
   @override
   void initState() {
     super.initState();
-    //getData();
     getPokemons();
-  }
-
-  Widget cardTemplate(pokemons) {
-    return Card(
-      margin: EdgeInsets.fromLTRB(16.0, 10.0, 16.0, 0),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Text(
-              pokemons,
-              style: TextStyle(fontSize: 18.0, color: Colors.grey[800]),
-            )
-          ],
-        ),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: ListView(
-          children: pokemons.map((p) => cardTemplate(p)).toList(),
+      backgroundColor: pokebg,
+      body: Center(
+        child: SpinKitFadingCube(
+          color: Colors.yellow,
+          size: 50.0,
         ),
       ),
     );
